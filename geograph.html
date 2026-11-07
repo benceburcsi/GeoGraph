@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E9EHK1WQ9H"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-E9EHK1WQ9H');
+</script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2134864579044999"
+     crossorigin="anonymous"></script>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               viewport-fit=cover">
+
+<title>GeoGraph - Geography Game</title>
+
+<meta
+  name="description"
+  content="Play GeoGraph, the daily geography quiz game where you guess the mystery country using border distances.">
+
+<meta
+  name="keywords"
+  content="geography game, daily geography quiz, country guessing game, map game, geograph, globle alternative">
+
+<meta
+  property="og:title"
+  content="🌍 GeoGraph">
+
+<meta
+  property="og:description"
+  content="Guess the mystery country using border distances.">
+
+<meta
+  property="og:type"
+  content="website">
+
+<link rel="icon" type="image/svg+xml" href="https://fonts.gstatic.com/s/e/notoemoji/latest/1f310/emoji.svg">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+html, body{
+  width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  background:#0f0f0f;
+  color:white;
+  font-family:Arial, sans-serif;
+  text-align:center;
+  overflow-x:hidden;
+}
+
+/* =========================================
+   REKLÁMOK POZÍCIONÁLÁSA
+   ========================================= */
+.ad-side {
+  display: none;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 160px;
+  height: 600px;
+  z-index: 3000;
+}
+
+.ad-left {
+  left: 20px;
+}
+
+.ad-right {
+  right: 20px;
+}
+
+@media (min-width: 1100px) {
+  .ad-side {
+    display: block;
+  }
+}
+
+.ad-bottom-mobile {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: #0f0f0f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+}
+
+@media (min-width: 1100px) {
+  .ad-bottom-mobile {
+    display: none !important;
+  }
+}
+
+.ad-placeholder {
+  width: 160px;
+  height: 600px;
+  box-sizing: border-box;
+  background: #1a1a1a;
+  border: 1px dashed #555;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.ad-placeholder-mobile {
+  width: 320px;
+  height: 50px;
+  background: #1a1a1a;
+  border: 1px dashed #555;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+@media (max-width: 1099px) {
+  body {
+    padding-bottom: 65px !important;
+  }
+}
+
+/* =========================================
+   FEJLÉC ÉS ELRENDEZÉS
+   ========================================= */
+#headerRow {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+  margin: 15px auto 0px auto;
+  padding: 0 10px;
+}
+
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#headerRow h2 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+#modeLabel {
+  margin-top: 2px;
+  margin-bottom: 4px;
+  font-weight: bold;
+  color: #ffd700;
+  font-size: 14px;
+}
+
+.header-divider {
+  max-width: 600px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 12px auto 6px auto;
+  width: 90%;
+}
+
+.header-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: linear-gradient(#3a3a3a,#1f1f1f);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.2);
+  transition: 0.2s;
+}
+
+.header-btn:hover {
+  transform: scale(1.08);
+  background: linear-gradient(#4a4a4a,#2a2a2a);
+}
+
+#globeBtn {
+  position: absolute;
+  left: 10px;
+}
+
+.header-right-btns {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+#gameDescription {
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-size: 13.5px;
+  color: #ccc;
+  padding: 0 12px;
+}
+
+/* =========================================
+   TÉRKÉP ÉS GAMEPLAY ELEMEK
+   ========================================= */
+#map {
+  width: calc(100vw - 32px);
+  max-width: 850px;
+  aspect-ratio: 2 / 1;
+  height: auto;
+  margin: 12px auto;
+  border-radius: 32px;
+  background: linear-gradient(#3f7fbf, #5b94cc);
+  border: 4px solid #ffffff;
+  box-shadow: inset 0 0 0 3px #c0c0c0, 0 8px 20px rgba(0,0,0,0.5);
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+input, button {
+  padding: 10px;
+  font-size: 16px;
+  margin: 5px;
+}
+
+#inputWrapper {
+  position: relative;
+  display: inline-block;
+  width: min(420px, 92vw);
+  overflow: visible;
+}
+
+#inputRow {
+  position: relative;
+  width: fit-content;
+  margin: 10px auto;
+  overflow: visible;
+}
+
+#autocompleteBox {
+  position: absolute;
+  left: 0;
+  width: 75%;
+  background: #222;
+  border: 1px solid #555;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+  z-index: 99999;
+  display: none;
+  overflow-y: auto;
+  max-height: 220px;
+}
+
+.autoItem {
+  padding: 10px;
+  cursor: pointer;
+  background: #222;
+}
+
+.autoItem:hover {
+  background: #444;
+}
+
+#winText {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #27ae60;
+  font-size: 18px;
+}
+
+.green {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+/* =========================================
+   MODALOK ÉS POPUPOK
+   ========================================= */
+#infoModal, #menuPanel, #hintPopup, #practiceEndPopup, #gamesModal, #legalModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  z-index: 4000;
+}
+
+#infoContent {
+  background: #1a1a1a;
+  width: 500px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  margin: 40px auto;
+  padding: 24px;
+  border-radius: 14px;
+  border: 3px solid white;
+  text-align: left;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+  position: relative;
+}
+
+#infoContent ul {
+  line-height: 1.7;
+  padding-left: 22px;
+}
+
+#infoContent li {
+  margin-bottom: 10px;
+}
+
+#closeInfo, #closeMenu, #closeGamesModal, #closeLegal {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+  z-index: 10;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+
+#closeInfo:hover, #closeMenu:hover, #closeGamesModal:hover, #closeLegal:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.2);
+}
+
+#menuContent {
+  background: #1a1a1a;
+  width: 420px;
+  max-width: 90%;
+  margin: 50px auto;
+  padding: 28px;
+  border-radius: 18px;
+  border: 3px solid white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+}
+
+.menu-header-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.menu-header-block h2 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+  color: white;
+}
+
+.menu-mode-label {
+  margin-top: 2px;
+  font-weight: bold;
+  color: #ffd700;
+  font-size: 14px;
+}
+
+.menu-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 10px 0 16px 0;
+}
+
+#menuTopRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+#menuStatusText {
+  white-space: normal;
+  font-size: 15px;
+  line-height: 1.4;
+  text-align: center;
+  color: #ddd;
+}
+
+#shareBtn {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 16px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+  box-sizing: border-box;
+}
+
+#shareBtn:hover {
+  transform: translateY(-2px);
+  background: #2ecc71;
+  box-shadow: 0 6px 16px rgba(46, 204, 113, 0.4);
+}
+
+#statsContainer {
+  margin-top: 5px;
+}
+
+#statsTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#statsBox {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.statRow:not(:last-child) {
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+#modeButtons {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.menuBtn {
+  flex: 1;
+  padding: 10px 6px;
+  background: #f1c40f;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  box-sizing: border-box;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.menuBtn:hover {
+  background: #f39c12;
+}
+
+.checkmark {
+  color: #1e824c;
+  font-weight: 900;
+  font-size: 15px;
+}
+
+/* PLAY ANOTHER GEOGRAPHY GAME POPUP */
+#gamesModalContent {
+  background: #1a1a1a;
+  width: 90%;
+  max-width: 320px;
+  margin: 150px auto;
+  padding: 20px 18px;
+  border-radius: 16px;
+  border: 2px solid white;
+  text-align: left;
+  position: relative;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.game-modal-title {
+  margin-top: 2px;
+  margin-bottom: 14px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #fff;
+  padding-right: 30px;
+}
+
+.game-link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 8px;
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: 0.2s;
+}
+
+.game-link-btn:hover {
+  background: #3a3a3a;
+  border-color: #666;
+}
+
+/* =========================================
+   FOOTER & SEO ACCORDION
+   ========================================= */
+footer {
+  width: min(600px, 92vw);
+  margin: 30px auto 15px auto;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.accordion-card {
+  background: #181818;
+  border: 1px solid #333;
+  border-radius: 16px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.accordion-header {
+  width: 100%;
+  padding: 14px 18px;
+  background: none;
+  border: none;
+  color: #ddd;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin: 0;
+}
+
+.accordion-header:hover {
+  background: #222;
+}
+
+.accordion-content {
+  display: none;
+  padding: 0 18px 16px 18px;
+  color: #bbb;
+  font-size: 12px;
+  line-height: 1.6;
+  border-top: 1px solid #282828;
+}
+
+.legal-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.legal-links button {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+  font-size: 11px;
+}
+
+.legal-links button:hover {
+  color: #ccc;
+  text-decoration: underline;
+}
+
+#guessesRow {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.guessItem {
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+#hintButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 12px;
+}
+
+#hintButtons button {
+  padding: 10px 18px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.55);
+  backdrop-filter: blur(3px);
+  transition: 0.2s;
+}
+
+#hintButtons button:hover {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.8);
+  border-color: rgba(255,255,255,0.3);
+}
+
+#hintButtons button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* =========================================
+   MOBIL NÉZET (600px alatt) — ELRENDEZÉS IGATÁSA
+   ========================================= */
+@media (max-width: 600px) {
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 1. FEJLÉC */
+  #headerRow {
+    order: 1;
+    margin-top: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 8px;
+  }
+
+  #headerRow h2 {
+    font-size: 26px !important;
+  }
+
+  .header-right-btns {
+    right: 8px !important;
+    gap: 4px !important;
+  }
+
+  .header-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  /* 2. FEJLÉC ELVÁLASZTÓ VONAL */
+  .header-divider {
+    order: 2;
+    margin: 8px auto 8px auto;
+  }
+
+  /* 3. LEÍRÁS MOBILON KÖZVETLENÜL A TÉRKÉP FELETT */
+  #gameDescription {
+    order: 3;
+    margin-top: 6px;
+    margin-bottom: 12px;
+  }
+
+  /* 4. TÉRKÉP A LEÍRÁS ALATT */
+  #map {
+    order: 4;
+    width: 100vw;
+    aspect-ratio: 2 / 1;
+    height: auto;
+    margin: 6px auto 12px auto;
+    border-radius: 28px;
+    overflow: hidden;
+  }
+
+  /* 5. BEVITELI SÁV */
+  #inputRow {
+    order: 5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 96%;
+    margin: auto;
+  }
+
+  #countryInput {
+    width: 75%;
+    margin: 0;
+  }
+
+  #guessBtn {
+    width: 25%;
+    margin: 0;
+  }
+
+  #remaining {
+    order: 6;
+  }
+
+  #guessesWrapper {
+    order: 7;
+  }
+
+  #guessesRow {
+    width: 100%;
+    margin-top: 10px;
+    gap: 6px;
+  }
+
+  /* ABOUT GEOGRAPH & FOOTER MOBILON KISZORÍTVA A LÁTHATÓ KÉPERNYŐRŐL (CSAK GÖRGETVE LÁTSZIK) */
+  footer {
+    order: 10;
+    margin-top: 120px !important;
+    margin-bottom: 35px;
+  }
+
+  #autocompleteBox {
+    bottom: 100%;
+    top: auto;
+    max-height: 180px;
+    overflow-y: auto;
+    padding-bottom: 8px;
+  }
+
+  #infoContent {
+    width: 92%;
+    margin: 20px auto;
+    padding: 18px;
+    font-size: 14px;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  #menuContent {
+    width: 92%;
+    max-height: 85vh;
+    overflow-y: auto;
+    margin: 5vh auto;
+    padding: 20px;
+  }
+
+  #modeButtons {
+    gap: 5px;
+  }
+
+  .menuBtn {
+    font-size: 11px;
+    padding: 10px 4px;
+  }
+}
+
+@media (min-width: 601px) {
+  #autocompleteBox {
+    top: 100%;
+    bottom: auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- REKLÁM KONTÉNERI -->
+<div class="ad-side ad-left">
+    <div class="ad-placeholder">Ad Space (160x600)</div>
+</div>
+
+<div class="ad-side ad-right">
+    <div class="ad-placeholder">Ad Space (160x600)</div>
+</div>
+
+<div class="ad-bottom-mobile">
+    <div class="ad-placeholder-mobile">Ad Space (320x50)</div>
+</div>
+
+<!-- 1. FEJLÉC (CÍM EGY SORBAN A GOMBOKKAL, ALATTA A DAY/WEEK SZÁM) -->
+<div id="headerRow">
+    <button id="globeBtn" class="header-btn" title="Play another geography game">🌍</button>
+    <div class="header-center">
+      <h2>GeoGraph</h2>
+      <span id="modeLabel">(Day #1)</span>
+    </div>
+    <div class="header-right-btns">
+        <button id="infoBtn" class="header-btn">ℹ</button>
+        <button id="menuBtn" class="header-btn">☰</button>
+    </div>
+</div>
+
+<!-- FEJLÉC ELVÁLASZTÓ VONAL -->
+<div class="header-divider"></div>
+
+<!-- 2. LEÍRÁS: GUESS A COUNTRY... -->
+<p id="gameDescription">
+Guess a country. The game tells you how many land borders separate it from the 
+<span class="green">MYSTERY COUNTRY</span>.
+</p>
+
+<!-- 3. INPUT BEVITELI SÁV -->
+<div id="inputRow">
+  <input
+    id="countryInput"
+    placeholder="Enter country name"
+  >
+  <button id="guessBtn" onclick="submitGuess()">
+    Guess
+  </button>
+  <div id="autocompleteBox"></div>
+</div>
+
+<p id="remaining"></p>
+
+<!-- 4. KITALÁLT ORSZÁGOK, HINT GOMBOK ÉS A "WAS THE MYSTERY..." FELIRAT -->
+<div id="guessesWrapper">
+  <div id="guessesRow"></div>
+  <div id="hintButtons">
+    <button id="showBordersBtn">
+        Show Borders
+    </button>
+    <button id="showInitialBtn">
+        Show Initial
+    </button>
+  </div>
+  <div id="winText"></div>
+</div>
+
+<!-- 5. TÉRKÉP (LAPTOPON A GOMBOK ÉS KITALÁLT ORSZÁGOK ALATT) -->
+<div id="map"></div>
+
+<!-- 6. ABOUT GEOGRAPH & LEGAL FOOTER (LEGALUL) -->
+<footer>
+  <div class="accordion-card">
+    <button class="accordion-header" onclick="toggleAccordion()">
+      <span>About GeoGraph & Game Rules</span>
+      <span id="accordionArrow">▼</span>
+    </button>
+    <div id="accordionContent" class="accordion-content">
+      <p style="margin-top:10px;">
+        GeoGraph is an interactive daily geography game where players guess a mystery country using land border graph distances.
+      </p>
+      <p style="margin-bottom:0;">
+        Each guess reveals how many land borders separate your selected country from the target. A distance of 0 means you have successfully identified the Mystery Country!
+      </p>
+    </div>
+  </div>
+
+  <div class="legal-links">
+    <button onclick="openLegalModal('privacy')">Privacy Policy</button>
+    <span>•</span>
+    <button onclick="openLegalModal('terms')">Terms of Service</button>
+    <span>•</span>
+    <button onclick="openLegalModal('cookies')">Cookie Settings</button>
+    <span>•</span>
+    <span>© 2026 GeoGraph</span>
+  </div>
+</footer>
+
+<!-- MODALOK ÉS FELUGRÓ ABLAKOK -->
+<div id="gamesModal">
+  <div id="gamesModalContent">
+    <span id="closeGamesModal">✕</span>
+    <div class="game-modal-title">Play another geography game</div>
+    <a href="https://geo90.pro" target="_blank" class="game-link-btn">
+      <span>Geo90</span>
+      <span>→</span>
+    </a>
+    <a href="https://geolist.pro" target="_blank" class="game-link-btn">
+      <span>GeoList</span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<div id="infoModal">
+  <div id="infoContent">
+    <span id="closeInfo">✕</span>
+    <h3>Game Information</h3>
+    <ul>
+      <li>The game tells you how many land borders separate your guess from the Mystery Country.</li>
+      <li>The Mystery Country has to be connected to more other countries through land borders.</li>
+      <li>Because of this, countries without land neighbours and countries from separated pairs (e.g.: UK), cannot be the Mystery Country.</li>
+      <li>If your guess cannot be connected to the Mystery Country through land borders, the game will write: NO CONNECTION.</li>
+      <li>Multiple game modes are available, including Daily Challenge, Weekly Challenge, and Practice.</li>
+      <li>In Weekly Challenge mode you have only 8 guesses and no hint.</li>
+      <li>GeoGraph saves your game progress and stats locally on your device. We use Google Analytics to understand website traffic. No personal data is collected.</li>
+      <li>Some countries share land borders that many people don't even know about:  
+           🇫🇷 France - 🇧🇷 Brazil, 
+           🇫🇷 France - 🇸🇷 Suriname,
+           🇫🇷 France - 🇳🇱 Netherlands,  
+           🇪🇸 Spain - 🇲🇦 Morocco, 
+           🇩🇰 Denmark - 🇨🇦 Canada</li>
+    </ul>
+  </div>
+</div>
+
+<div id="practiceEndPopup">
+  <div id="practiceEndContent" style="background:#1a1a1a; width:300px; margin:150px auto; padding:20px; border-radius:14px; border:2px solid white; text-align:center;">
+    <span id="closePracticePopup" style="float:right; cursor:pointer; font-size:18px;">✕</span>
+    <h3 id="practiceResultText"></h3>
+    <div id="practiceButtons" style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
+      <button id="practicePlayAgain" style="flex:1; padding:8px; background:#27ae60; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Play Again</button>
+      <button id="practiceBackMenu" style="flex:1; padding:8px; background:#555; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Menu</button>
+    </div>
+  </div>
+</div>
+
+<div id="menuPanel">
+  <div id="menuContent">
+    <span id="closeMenu">✕</span>
+
+    <!-- MENÜ CÍM ÉS DÁTUM BLOKK -->
+    <div class="menu-header-block">
+      <h2>GeoGraph</h2>
+      <span class="menu-mode-label" id="menuModeLabel">(Day #1)</span>
+    </div>
+
+    <!-- ELVÁLASZTÓ VONAL -->
+    <div class="menu-divider"></div>
+
+    <div id="menuTopRow">
+      <div id="menuStatusText">
+        Complete the challenge to share your result
+      </div>
+      <button id="shareBtn">
+        SHARE RESULT
+      </button>
+    </div>
+
+    <div id="statsContainer">
+      <h3 id="statsTitle">
+        Statistics
+      </h3>
+      <div id="statsBox">
+        <div class="statRow">
+          <span>Games Played</span>
+          <span id="statGames">0</span>
+        </div>
+        <div class="statRow">
+          <span>Win Rate</span>
+          <span id="statWinRate">0%</span>
+        </div>
+        <div class="statRow">
+          <span>Current Streak</span>
+          <span id="statCurrentStreak">0</span>
+        </div>
+        <div class="statRow">
+          <span>Longest Streak</span>
+          <span id="statLongestStreak">0</span>
+        </div>
+        <div class="statRow">
+          <span>Average Guesses</span>
+          <span id="statAverage">0</span>
+        </div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:20px; margin-bottom:10px;">Game Modes</h4>
+
+    <div id="modeButtons">
+      <button class="menuBtn" id="weeklyBtn">
+        <span>Weekly Challenge</span><span id="weeklyCheck" class="checkmark"></span>
+      </button>
+
+      <button class="menuBtn" id="practiceBtn">
+        <span>Practice</span>
+      </button>
+
+      <button class="menuBtn" id="dailyBtn">
+        <span>Daily Challenge</span><span id="dailyCheck" class="checkmark"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="hintPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:5000;">
+  <div id="hintContent" style="background:#1a1a1a; width:300px; margin:150px auto; padding:20px; border-radius:14px; border:2px solid white; text-align:center; position:relative;">
+    <span id="closeHint" style="float:right; cursor:pointer; font-size:18px;">✕</span>
+    <h3 style="margin-top:0;">Hint</h3>
+    <p id="hintText"></p>
+  </div>
+</div>
+
+<!-- LEGAL INFORMATION MODAL -->
+<div id="legalModal">
+  <div style="background:#1a1a1a; width:min(450px, 90vw); margin:100px auto; padding:24px; border-radius:16px; border:2px solid white; text-align:left; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.8);">
+    <span id="closeLegal">✕</span>
+    <h3 id="legalTitle" style="margin-top:0;">Legal Information</h3>
+    <div id="legalBody" style="font-size:12px; color:#ccc; line-height:1.6; max-height:60vh; overflow-y:auto;">
+    </div>
+  </div>
+</div>
+
+<script>
+// -------------------------------------------------------------------------
+// PLACEHOLDER ARRAYS & ALIASEK (A SAJÁT ADATBÁZISAID MEGMARADNAK)
+// -------------------------------------------------------------------------
+const microstateMarkers = {
+
+  "vatican city": { lat: 41.9029, lng: 12.4534, zoom: 8 },
+  "monaco": { lat: 43.7384, lng: 7.4246, zoom: 8 },
+  "san marino": { lat: 43.9424, lng: 12.4578, zoom: 8 },
+  "andorra": { lat: 42.5063, lng: 1.5218, zoom: 7 },
+  "liechtenstein": { lat: 47.1660, lng: 9.5554, zoom: 7 },
+
+  "malta": { lat: 35.9375, lng: 14.3754, zoom: 7 },
+  "singapore": { lat: 1.3521, lng: 103.8198, zoom: 7 },
+  "bahrain": { lat: 26.0667, lng: 50.5577, zoom: 7 },
+
+  "maldives": { lat: 3.2028, lng: 73.2207, zoom: 6 },
+  "seychelles": { lat: -4.6796, lng: 55.4920, zoom: 6 },
+
+  "nauru": { lat: -0.5228, lng: 166.9315, zoom: 6 },
+  "tuvalu": { lat: -7.1095, lng: 177.6493, zoom: 6 },
+
+  "saint kitts and nevis": { lat: 17.3578, lng: -62.7830, zoom: 7 },
+  "saint lucia": { lat: 13.9094, lng: -60.9789, zoom: 7 },
+  "saint vincent and the grenadines": { lat: 12.9843, lng: -61.2872, zoom: 7 }
+
+};
+
+const borders = {
+"Afghanistan": ["China","Iran","Pakistan","Tajikistan","Turkmenistan","Uzbekistan"],
+"Albania": ["Greece","North Macedonia","Montenegro","Kosovo"],
+"Algeria": ["Libya","Mali","Mauritania","Morocco","Niger","Tunisia","Western Sahara"],
+"Andorra": ["France","Spain"],
+"Angola": ["Democratic Republic of the Congo","Namibia","Zambia"],
+"Antigua and Barbuda": [],
+"Argentina": ["Bolivia","Brazil","Chile","Paraguay","Uruguay"],
+"Armenia": ["Azerbaijan","Georgia","Iran","Turkey"],
+"Australia": [],
+"Austria": ["Czech Republic","Germany","Hungary","Italy","Liechtenstein","Slovakia","Slovenia","Switzerland"],
+"Azerbaijan": ["Armenia","Georgia","Iran","Russia","Turkey"],
+"Bahamas": [],
+"Bahrain": [],
+"Bangladesh": ["India","Myanmar"],
+"Barbados": [],
+"Belarus": ["Latvia","Lithuania","Poland","Russia","Ukraine"],
+"Belgium": ["France","Germany","Luxembourg","Netherlands"],
+"Belize": ["Guatemala","Mexico"],
+"Benin": ["Burkina Faso","Niger","Nigeria","Togo"],
+"Bhutan": ["China","India"],
+"Bolivia": ["Argentina","Brazil","Chile","Paraguay","Peru"],
+"Bosnia and Herzegovina": ["Croatia","Montenegro","Serbia"],
+"Botswana": ["Namibia","South Africa","Zimbabwe"],
+"Brazil": ["Argentina","Bolivia","Colombia","France","Guyana","Paraguay","Peru","Suriname","Uruguay","Venezuela"],
+"Brunei": ["Malaysia"],
+"Bulgaria": ["Greece","North Macedonia","Romania","Serbia","Turkey"],
+"Burkina Faso": ["Benin","Ivory Coast","Ghana","Mali","Niger","Togo"],
+"Burundi": ["Democratic Republic of the Congo","Rwanda","Tanzania"],
+"Cambodia": ["Laos","Thailand","Vietnam"],
+"Cameroon": ["Central African Republic","Chad","Equatorial Guinea","Gabon","Nigeria","Republic of the Congo"],
+"Canada": ["United States", "Denmark"],
+"Central African Republic": ["Cameroon","Chad","Republic of the Congo","Democratic Republic of the Congo","South Sudan","Sudan"],
+"Chad": ["Cameroon","Central African Republic","Libya","Niger","Nigeria","Sudan"],
+"Chile": ["Argentina","Bolivia","Peru"],
+"China": ["Afghanistan","Bhutan","India","Kazakhstan","Kyrgyzstan","Laos","Mongolia","Myanmar","Nepal","North Korea","Pakistan","Russia","Tajikistan","Vietnam"],
+"Colombia": ["Brazil","Ecuador","Panama","Peru","Venezuela"],
+"Costa Rica": ["Nicaragua","Panama"],
+"Croatia": ["Bosnia and Herzegovina","Hungary","Montenegro","Serbia","Slovenia"],
+"Cuba": [],
+"Cyprus": [],
+"Czech Republic": ["Austria","Germany","Poland","Slovakia"],
+"Democratic Republic of the Congo": ["Angola","Burundi","Central African Republic","Republic of the Congo","Rwanda","South Sudan","Tanzania","Uganda","Zambia"],
+"Republic of the Congo": ["Cameroon","Central African Republic","Democratic Republic of the Congo","Gabon"],
+"Denmark": ["Germany", "Canada"],
+"Djibouti": ["Eritrea","Ethiopia","Somalia"],
+"Dominica": [],
+"Dominican Republic": ["Haiti"],
+"Ecuador": ["Colombia","Peru"],
+"Egypt": ["Israel","Libya","Sudan"],
+"El Salvador": ["Guatemala","Honduras"],
+"Equatorial Guinea": ["Cameroon","Gabon"],
+"Eritrea": ["Djibouti","Ethiopia","Sudan"],
+"Estonia": ["Latvia","Russia"],
+"Eswatini": ["Mozambique","South Africa"],
+"Ethiopia": ["Djibouti","Eritrea","Kenya","Somalia","South Sudan","Sudan"],
+"Finland": ["Norway","Russia","Sweden"],
+"France": ["Andorra","Belgium","Brazil","Germany","Italy","Luxembourg","Monaco","Spain","Suriname","Switzerland"],
+"Gabon": ["Cameroon","Equatorial Guinea","Republic of the Congo"],
+"Georgia": ["Armenia","Azerbaijan","Russia","Turkey"],
+"Germany": ["Austria","Belgium","Czech Republic","Denmark","France","Luxembourg","Netherlands","Poland","Switzerland"],
+"Ghana": ["Burkina Faso","Ivory Coast","Togo"],
+"Greece": ["Albania","Bulgaria","North Macedonia","Turkey"],
+"Guatemala": ["Belize","El Salvador","Honduras","Mexico"],
+"Guinea": ["Guinea-Bissau","Ivory Coast","Liberia","Mali","Senegal","Sierra Leone"],
+"Guinea-Bissau": ["Guinea","Senegal"],
+"Guyana": ["Brazil","Suriname","Venezuela"],
+"Haiti": ["Dominican Republic"],
+"Honduras": ["Guatemala","El Salvador","Nicaragua"],
+"Hungary": ["Austria","Croatia","Romania","Serbia","Slovakia","Slovenia","Ukraine"],
+"Iceland": [],
+"India": ["Bangladesh","Bhutan","China","Myanmar","Nepal","Pakistan"],
+"Indonesia": ["Malaysia","Papua New Guinea","Timor-Leste"],
+"Iran": ["Afghanistan","Armenia","Azerbaijan","Iraq","Pakistan","Turkey","Turkmenistan"],
+"Iraq": ["Iran","Jordan","Kuwait","Saudi Arabia","Syria","Turkey"],
+"Ireland": ["United Kingdom"],
+"Israel": ["Egypt","Jordan","Lebanon","Syria"],
+"Italy": ["Austria","France","San Marino","Slovenia","Switzerland","Vatican City"],
+"Ivory Coast":["Liberia","Guinea","Mali","Burkina Faso","Ghana"],
+"Jamaica": [],
+"Japan": [],
+"Jordan": ["Iraq","Israel","Saudi Arabia","Syria"],
+"Kazakhstan": ["China","Kyrgyzstan","Russia","Turkmenistan","Uzbekistan"],
+"Kenya": ["Ethiopia","Somalia","South Sudan","Tanzania","Uganda"],
+"Kiribati": [],
+"Kosovo":["Albania", "Montenegro", "North Macedonia", "Serbia"],
+"Kuwait": ["Iraq","Saudi Arabia"],
+"Kyrgyzstan": ["China","Kazakhstan","Tajikistan","Uzbekistan"],
+"Laos": ["Cambodia","China","Myanmar","Thailand","Vietnam"],
+"Latvia": ["Estonia","Lithuania","Russia","Belarus"],
+"Lebanon": ["Israel","Syria"],
+"Lesotho": ["South Africa"],
+"Liberia": ["Ivory Coast","Guinea","Sierra Leone"],
+"Libya": ["Algeria","Chad","Egypt","Niger","Sudan","Tunisia"],
+"Liechtenstein": ["Austria","Switzerland"],
+"Lithuania": ["Belarus","Latvia","Poland","Russia"],
+"Luxembourg": ["Belgium","France","Germany"],
+"Madagascar": [],
+"Malawi": ["Mozambique","Tanzania","Zambia"],
+"Malaysia": ["Brunei","Indonesia","Thailand"],
+"Mali": ["Algeria","Burkina Faso","Ivory Coast","Guinea","Mauritania","Niger","Senegal"],
+"Malta": [],
+"Mauritania": ["Algeria","Mali","Senegal","Western Sahara"],
+"Mauritius": [],
+"Mexico": ["Belize","Guatemala","United States"],
+"Moldova": ["Romania","Ukraine"],
+"Monaco": ["France"],
+"Mongolia": ["China","Russia"],
+"Montenegro": ["Albania","Bosnia and Herzegovina","Croatia","Kosovo","Serbia"],
+"Morocco": ["Algeria","Spain","Western Sahara"],
+"Mozambique": ["Eswatini","Malawi","South Africa","Tanzania","Zambia","Zimbabwe"],
+"Myanmar": ["Bangladesh","China","India","Laos","Thailand"],
+"Namibia": ["Angola","Botswana","South Africa","Zambia"],
+"Nepal": ["China","India"],
+"Netherlands": ["Belgium","France","Germany"],
+"New Zealand": [],
+"Nicaragua": ["Costa Rica","Honduras"],
+"Niger": ["Algeria","Benin","Burkina Faso","Chad","Libya","Mali","Nigeria"],
+"Nigeria": ["Benin","Cameroon","Chad","Niger"],
+"North Korea": ["China","Russia","South Korea"],
+"North Macedonia": ["Albania","Bulgaria","Greece","Kosovo","Serbia"],
+"Norway": ["Finland","Russia","Sweden"],
+"Oman": ["Saudi Arabia","United Arab Emirates","Yemen"],
+"Pakistan": ["Afghanistan","China","India","Iran"],
+"Panama": ["Costa Rica","Colombia"],
+"Papua New Guinea": ["Indonesia"],
+"Paraguay": ["Argentina","Bolivia","Brazil"],
+"Peru": ["Bolivia","Brazil","Chile","Colombia","Ecuador"],
+"Philippines": [],
+"Poland": ["Belarus","Czech Republic","Germany","Lithuania","Russia","Slovakia","Ukraine"],
+"Portugal": ["Spain"],
+"Qatar": ["Saudi Arabia"],
+"Romania": ["Bulgaria","Hungary","Moldova","Serbia","Ukraine"],
+"Russia": ["Azerbaijan","Belarus","China","Estonia","Finland","Georgia","Kazakhstan","Latvia","Lithuania","Mongolia","North Korea","Norway","Poland","Ukraine"],
+"Rwanda": ["Burundi","Democratic Republic of the Congo","Tanzania","Uganda"],
+"Saint Lucia": [],
+"Saint Kitts and Nevis": [],
+"Saint Vincent and the Grenadines": [],
+"San Marino": ["Italy"],
+"Sao Tome and Principe": [],
+"Saudi Arabia": ["Iraq","Jordan","Kuwait","Oman","Qatar","United Arab Emirates","Yemen"],
+"Senegal": ["Gambia","Guinea","Guinea-Bissau","Mali","Mauritania"],
+"Serbia": ["Bosnia and Herzegovina","Bulgaria","Croatia","Hungary","Kosovo","Montenegro","North Macedonia","Romania"],
+"Sierra Leone": ["Guinea","Liberia"],
+"Singapore": [],
+"Slovakia": ["Austria","Czech Republic","Hungary","Poland","Ukraine"],
+"Slovenia": ["Austria","Croatia","Hungary","Italy"],
+"Solomon Islands": [],
+"Somalia": ["Djibouti","Ethiopia","Kenya"],
+"South Africa": ["Botswana","Lesotho","Mozambique","Namibia","Zimbabwe","Eswatini"],
+"South Korea": ["North Korea"],
+"South Sudan": ["Central African Republic","Democratic Republic of the Congo","Ethiopia","Kenya","Sudan","Uganda"],
+"Spain": ["Andorra","France","Morocco","Portugal"],
+"Sri Lanka": [],
+"Sudan": ["Central African Republic","Chad","Egypt","Eritrea","Ethiopia","Libya","South Sudan"],
+"Suriname": ["Brazil","France","Guyana"],
+"Sweden": ["Finland","Norway"],
+"Switzerland": ["Austria","France","Germany","Italy","Liechtenstein"],
+"Syria": ["Iraq","Israel","Jordan","Lebanon","Turkey"],
+"Tajikistan": ["Afghanistan","China","Kyrgyzstan","Uzbekistan"],
+"Tanzania": ["Burundi","Democratic Republic of the Congo","Kenya","Malawi","Mozambique","Rwanda","Uganda","Zambia"],
+"Thailand": ["Cambodia","Laos","Malaysia","Myanmar"],
+"Gambia": ["Senegal"],
+"Timor-Leste": ["Indonesia"],
+"Togo": ["Benin","Burkina Faso","Ghana"],
+"Tonga": [],
+"Trinidad and Tobago": [],
+"Tunisia": ["Algeria","Libya"],
+"Turkey": ["Armenia","Azerbaijan","Bulgaria","Georgia","Greece","Iran","Iraq","Syria"],
+"Turkmenistan": ["Afghanistan","Iran","Kazakhstan","Uzbekistan"],
+"Uganda": ["Democratic Republic of the Congo","Kenya","Rwanda","South Sudan","Tanzania"],
+"Ukraine": ["Belarus","Hungary","Moldova","Poland","Romania","Russia","Slovakia"],
+"United Arab Emirates": ["Oman","Saudi Arabia"],
+"United Kingdom": ["Ireland"],
+"United States": ["Canada","Mexico"],
+"Uruguay": ["Argentina","Brazil"],
+"Uzbekistan": ["Afghanistan","Kazakhstan","Kyrgyzstan","Tajikistan","Turkmenistan"],
+"Vatican City": ["Italy"],
+"Venezuela": ["Brazil","Colombia","Guyana"],
+"Vietnam": ["Cambodia","China","Laos"],
+"Western Sahara": ["Algeria","Mauritania","Morocco"],
+"Yemen": ["Oman","Saudi Arabia"],
+"Zambia": ["Angola","Botswana","Democratic Republic of the Congo","Malawi","Mozambique","Namibia","Tanzania","Zimbabwe"],
+"Zimbabwe": ["Botswana","Mozambique","South Africa","Zambia"],
+"Comoros": [],
+"Grenada": [],
+"Maldives": [],
+"Micronesia": [],
+"Palau": [],
+"Samoa": [],
+"Seychelles": [],
+"Tuvalu": [],
+"Vanuatu": []
+};
+
+
+
+let bordersHintUsed = false;
+let bordersVisible = false;
+let initialHintUsed = false;
+let gameEnded = false;
+let playerWon = false;
+let gameMode = "daily";
+const isMobile = window.innerWidth <= 600;
+
+const map = L.map('map', {
+  crs: L.CRS.EPSG4326,
+  zoomControl: false,
+  attributionControl: false,
+  minZoom: isMobile ? -1 : 1,
+  maxZoom: 7,
+  zoomSnap: 0.01,
+  zoomDelta: 0.01,
+  maxBounds: [[-90,-180],[90,180]],
+  maxBoundsViscosity: 1
+});
+
+function resetWorldView(){
+  map.invalidateSize();
+  const bounds = L.latLngBounds(
+    [-60, -170],
+    [85, 170]
+  );
+  map.fitBounds(bounds, {
+    padding: [0, 0],
+    animate: false
+  });
+}
+
+let geoLayer;
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    map.invalidateSize();
+    resetWorldView();
+  }, 100);
+});
+
+let borderOutline = null;
+
+const nameFixes = {
+  "czech republic":"czech republic",
+  "ivory coast":"ivory coast",
+  "côte d'ivoire":"ivory coast",
+  "cote d'ivoire":"ivory coast",
+  "east timor": "timor-leste",
+  "timor leste": "timor-leste",
+  "timor-leste": "timor-leste",
+  "swaziland":"eswatini",
+  "republic of serbia": "serbia",
+  "serbia and montenegro": "serbia"
+};
+
+function getColor(distance){
+  if(distance===null) return "#999";
+  if(distance===0) return "#27ae60";
+  const max=10;
+  const t=1-(Math.min(distance,max)/max);
+  const r=Math.floor(255-116*t);
+  const g=Math.floor(200-200*t);
+  const b=Math.floor(200-200*t);
+  return `rgb(${r},${g},${b})`;
+}
+
+// GeoJSON betöltés
+fetch("https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson")
+.then(res=>res.json())
+.then(data=>{
+  geoLayer = L.geoJSON(data, {
+   style: {
+      fillColor: "#d4c38a",
+      fillOpacity: 1,
+      stroke: true,
+      color: bordersVisible ? "#777" : "#d4c38a",
+      weight: bordersVisible ? 0.6 : 0.9,
+      opacity: bordersVisible ? 0.45 : 1
+    }
+  }).addTo(map);
+  resetWorldView();
+});
+
+function normalize(name){
+  return name.trim().toLowerCase();
+}
+
+function highlightCountry(countryName, distance){
+    const color = getColor(distance);
+
+    let normalized = normalize(countryName);
+    if(nameFixes[normalized]) normalized = nameFixes[normalized];
+
+    if(borderOutline){
+        map.removeLayer(borderOutline);
+        borderOutline = null;
+    }
+
+    geoLayer.eachLayer(layer=>{
+        const props = layer.feature.properties;
+        let name = (props.name||"").toLowerCase();
+
+        if(name==="united states of america") name="united states";
+        if(name==="united republic of tanzania") name="tanzania";
+        if(name==="cote d'ivoire" || name==="côte d'ivoire") name="ivory coast";
+        if(name==="east timor") name="timor-leste";
+        if(name==="timor leste") name="timor-leste";
+        if(name==="republic of serbia") name="serbia";
+        if(name==="czechia") name="czech republic";
+
+        if(name===normalized){
+            layer.setStyle({
+                fillColor: color,
+                fillOpacity: 0.9,
+                stroke: true,
+                color: "#000000",
+                weight: 1.2
+            });
+
+            layer.bringToFront();
+
+            borderOutline = L.geoJSON(layer.feature, {
+                style: {
+                    fill: false,
+                    stroke: true,
+                    color: "#000000",
+                    weight: 1.2
+                }
+            }).addTo(map);
+
+            const bounds = layer.getBounds();
+            const width = bounds.getNorthEast().lng - bounds.getSouthWest().lng;
+            const height = bounds.getNorthEast().lat - bounds.getSouthWest().lat;
+            const maxDim = Math.max(width, height);
+
+            if(maxDim < 1){
+                const buffer = 5;
+                const ne = L.latLng(
+                    bounds.getNorthEast().lat + buffer,
+                    bounds.getNorthEast().lng + buffer
+                );
+                const sw = L.latLng(
+                    bounds.getSouthWest().lat - buffer,
+                    bounds.getSouthWest().lng - buffer
+                );
+                map.flyToBounds(L.latLngBounds(sw, ne), { duration: 1, maxZoom: 2 });
+            } else {
+                map.flyToBounds(bounds, { duration: 1, maxZoom: 2 });
+            }
+        }
+    });
+
+    if(microstateMarkers[normalized]){
+        const m = microstateMarkers[normalized];
+        map.flyTo([m.lat, m.lng], m.zoom, { duration: 1 });
+    }
+}
+
+const bannedMystery=["United Kingdom","Ireland","Haiti","Dominican Republic"];
+const countries = Object.keys(borders).filter(c => borders[c].length > 0 && !bannedMystery.includes(c)).sort();
+
+let mystery = countries[Math.floor(Math.random()*countries.length)];
+let attempts = 0;
+let maxAttempts = 12;
+let guessedCountries = [];
+
+function getStatsKey(){
+  if(gameMode === "daily") return "geograph_stats_daily";
+  if(gameMode === "weekly") return "geograph_stats_weekly";
+  return null;
+}
+
+function shortestPath(start,end){
+  let queue=[[start,0]];
+  let visited=new Set();
+  while(queue.length){
+    let [c,d] = queue.shift();
+    if(c===end) return d;
+    visited.add(c);
+    for(let n of borders[c]||[]){
+      if(!visited.has(n)) queue.push([n,d+1]);
+    }
+  }
+  return null;
+}
+
+function submitGuess() {
+    if (gameEnded) return;
+    if (gameMode === "weekly" && attempts >= maxAttempts) return;
+
+    const input = document.getElementById("countryInput");
+    if (!input) return;
+
+    let guessInput = normalize(input.value);
+    if (!guessInput) return;
+
+    if (typeof countryAliases !== "undefined" && countryAliases[guessInput]) {
+        guessInput = normalize(countryAliases[guessInput]);
+    }
+    if (nameFixes[guessInput]) {
+        guessInput = normalize(nameFixes[guessInput]);
+    }
+
+    const guess = Object.keys(borders).find(
+        country => normalize(country) === guessInput
+    );
+
+    if (!guess || guessedCountries.includes(guess)) return;
+
+    guessedCountries.push(guess);
+    attempts++;
+
+    const distance = shortestPath(guess, mystery);
+    highlightCountry(guess, distance);
+
+    const label = distance === null ? "no connection" : distance;
+    const guessDiv = document.createElement("div");
+    guessDiv.className = "guessItem";
+    guessDiv.style.color = getColor(distance);
+    guessDiv.textContent = `${guess.toUpperCase()} (${label})`;
+
+    const guessesRow = document.getElementById("guessesRow");
+    if (guessesRow) {
+        guessesRow.appendChild(guessDiv);
+    }
+
+    if (gameMode === "weekly") {
+        const remaining = document.getElementById("remaining");
+        if (remaining) {
+            remaining.textContent = `Remaining guesses: ${maxAttempts - attempts}`;
+        }
+    }
+
+    input.value = "";
+    hideAuto();
+
+    if (guess === mystery) {
+        gameEnded = true;
+        playerWon = true;
+        input.disabled = true;
+
+        highlightCountry(mystery, 0);
+
+        const winText = document.getElementById("winText");
+        if (winText) {
+            winText.style.color = "#27ae60";
+            winText.textContent = `${mystery.toUpperCase()} WAS THE MYSTERY COUNTRY!`;
+        }
+
+        updateStatsAfterGame();
+        saveProgress();
+
+        if (typeof confetti === "function") {
+            confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
+        }
+
+        if (gameMode === "practice") {
+            showPracticeEndPopup();
+        } else {
+            setTimeout(() => {
+                openMenu();
+                createStatsIfMissing();
+                renderStatsInMenu();
+            }, 2000);
+        }
+        return;
+    }
+
+    if (gameMode === "weekly" && attempts >= maxAttempts) {
+        gameEnded = true;
+        playerWon = false;
+        input.disabled = true;
+
+        const winText = document.getElementById("winText");
+        if (winText) {
+            winText.style.color = "red";
+            winText.textContent = `${mystery.toUpperCase()} WAS THE MYSTERY COUNTRY!`;
+        }
+
+        updateStatsAfterGame();
+        saveProgress();
+
+        setTimeout(() => {
+            openMenu();
+        }, 2000);
+        return;
+    }
+
+    saveProgress();
+}
+
+// AUTOCOMPLETE
+const autoBox = document.getElementById("autocompleteBox");
+const input = document.getElementById("countryInput");
+const countryAliases = {
+  us: "United States", usa: "United States", america: "United States",
+  uk: "United Kingdom", britain: "United Kingdom", england: "United Kingdom",
+  uae: "United Arab Emirates", drc: "Democratic Republic of the Congo",
+  "congo kinshasa": "Democratic Republic of the Congo",
+  "congo brazzaville": "Republic of the Congo", car: "Central African Republic",
+  "south korea": "South Korea", "north korea": "North Korea",
+};
+
+function hideAuto(){ autoBox.style.display="none"; }
+
+input.addEventListener("input", () => {
+  const val = input.value.trim().toLowerCase();
+  if(val.length < 1){ hideAuto(); return; }
+
+  autoBox.innerHTML = "";
+  const results = [];
+
+  Object.keys(borders).forEach(country => {
+    if(country.toLowerCase().startsWith(val)){ results.push(country); }
+  });
+
+  Object.entries(countryAliases).forEach(([alias, country]) => {
+    if(alias.startsWith(val) && !results.includes(country)){ results.push(country); }
+  });
+
+  results.forEach(country => {
+    const div = document.createElement("div");
+    div.className = "autoItem";
+    div.textContent = country;
+    div.onclick = () => {
+      input.value = country;
+      hideAuto();
+    };
+    autoBox.appendChild(div);
+  });
+
+  autoBox.style.display = results.length ? "block" : "none";
+});
+
+document.addEventListener("click", e => { if(e.target!==input) hideAuto(); });
+input.addEventListener("keypress", e => { if(e.key==="Enter") submitGuess(); });
+
+// MODAL CONTROLS
+document.getElementById("infoBtn").onclick = () => { document.getElementById("infoModal").style.display = "block"; };
+document.getElementById("closeInfo").onclick = () => { document.getElementById("infoModal").style.display = "none"; };
+
+document.getElementById("globeBtn").onclick = () => { document.getElementById("gamesModal").style.display = "block"; };
+document.getElementById("closeGamesModal").onclick = () => { document.getElementById("gamesModal").style.display = "none"; };
+
+window.addEventListener("click", (e) => {
+  if(e.target === document.getElementById("infoModal")){ document.getElementById("infoModal").style.display = "none"; }
+  if(e.target === document.getElementById("gamesModal")){ document.getElementById("gamesModal").style.display = "none"; }
+  if(e.target === document.getElementById("legalModal")){ document.getElementById("legalModal").style.display = "none"; }
+});
+
+document.getElementById("menuBtn").onclick = openMenu;
+document.getElementById("closeMenu").onclick = () => { document.getElementById("menuPanel").style.display = "none"; };
+
+function openMenu(){
+  const text = document.getElementById("menuStatusText");
+  let menuGameEnded = gameEnded;
+  let menuPlayerWon = playerWon;
+  let menuAttempts = attempts;
+
+  if(gameMode === "practice"){
+    const saved = localStorage.getItem("progress_daily");
+    if(saved){
+      const data = JSON.parse(saved);
+      menuGameEnded = data.gameEnded || false;
+      menuPlayerWon = data.playerWon || false;
+      menuAttempts = data.attempts || 0;
+    } else {
+      menuGameEnded = false; menuPlayerWon = false; menuAttempts = 0;
+    }
+  }
+
+  if(!menuGameEnded){
+    text.innerHTML = "Complete the challenge to share your result!";
+  } else if(menuPlayerWon){
+    text.innerHTML = `You found the Mystery Country in ${menuAttempts} guesses!`;
+  } else {
+    text.innerHTML = "You almost found the Mystery Country!";
+  }
+
+  // Frissítjük a menüben lévő játékmód/nap jelzést
+  const menuModeLabel = document.getElementById("menuModeLabel");
+  if(menuModeLabel) {
+    if(gameMode === "daily"){
+      menuModeLabel.textContent = `(Day #${getDayNumber()})`;
+    } else if(gameMode === "weekly"){
+      menuModeLabel.textContent = `(Week #${getWeekNumber()})`;
+    } else if(gameMode === "practice"){
+      menuModeLabel.textContent = "(Practice)";
+    }
+  }
+  
+  document.getElementById("menuPanel").style.display = "block";
+  createStatsIfMissing();
+  renderStatsInMenu();
+  checkMenuCheckmarks();
+}
+
+function checkMenuCheckmarks(){
+  const dailySaved = localStorage.getItem("progress_daily");
+  if(dailySaved){
+    const data = JSON.parse(dailySaved);
+    if(data.date === getHungarianDateString() && data.gameEnded){
+      document.getElementById("dailyCheck").innerText = " ✓";
+    } else { document.getElementById("dailyCheck").innerText = ""; }
+  } else { document.getElementById("dailyCheck").innerText = ""; }
+
+  const weeklySaved = localStorage.getItem("progress_weekly");
+  if(weeklySaved){
+    const data = JSON.parse(weeklySaved);
+    if(data.weekDate === getWeekDate() && data.gameEnded){
+      document.getElementById("weeklyCheck").innerText = " ✓";
+    } else { document.getElementById("weeklyCheck").innerText = ""; }
+  } else { document.getElementById("weeklyCheck").innerText = ""; }
+}
+
+const shareBtn = document.getElementById("shareBtn");
+
+function distanceEmoji(distance){
+  if(distance === 0) return "🟩";
+  if(distance <= 1) return "🟥";
+  if(distance <= 2) return "🟧";
+  if(distance <= 4) return "🟨";
+  if(distance <= 6) return "🟪";
+  return "🩷";
+}
+
+function buildShareText(){
+  let text = "🌍 GeoGraph\n\n";
+  guessedCountries.forEach((country, index) => {
+    const distance = shortestPath(country, mystery);
+    const emoji = distanceEmoji(distance);
+    text += `${index + 1}. ${emoji} ${distance}\n`;
+  });
+  text += "\n";
+  if(playerWon){
+    text += `🎯 Found the mystery country in ${attempts} guesses!`;
+  } else {
+    text += `❌ Failed to find the mystery country`;
+  }
+  return text;
+}
+
+shareBtn.onclick = async () => {
+  if(!gameEnded){
+    alert("Finish the challenge to share your result!");
+    return;
+  }
+  const shareText = buildShareText();
+  if(navigator.share){
+    try{
+      await navigator.share({ title: "GeoGraph", text: shareText, url: window.location.href });
+      return;
+    } catch(err){}
+  }
+  try{
+    await navigator.clipboard.writeText(shareText);
+    alert("Result copied to clipboard!");
+  } catch(e){
+    alert(shareText);
+  }
+};
+
+document.getElementById("weeklyBtn").onclick = () => {
+  startNewGame("weekly");
+  document.getElementById("menuPanel").style.display = "none";
+};
+
+function resetMap(){
+  if(!geoLayer) return;
+  geoLayer.eachLayer(layer => {
+    layer.setStyle({ fillColor: "#d4c38a", fillOpacity: 1, color: "#d4c38a", weight: 0.9 });
+  });
+  if(borderOutline){
+    map.removeLayer(borderOutline);
+    borderOutline = null;
+  }
+  updateBorderVisibility();
+}
+
+function getHungarianDateString(){
+  const options = { timeZone: 'Europe/Budapest', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  const parts = formatter.formatToParts(new Date());
+  let y, m, d;
+  parts.forEach(p => {
+    if (p.type === 'year') y = p.value;
+    if (p.type === 'month') m = p.value;
+    if (p.type === 'day') d = p.value;
+  });
+  return `${y}-${m}-${d}`;
+}
+
+function getDayNumber(){
+  const launchDate = new Date("2026-05-29T00:00:00+02:00");
+  const now = new Date();
+  const diff = now - launchDate;
+  return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
+}
+
+function getWeekNumber(){
+  const launchDate = new Date("2026-05-29T00:00:00+02:00");
+  const now = new Date();
+  const diff = now - launchDate;
+  return Math.floor(diff / (1000 * 60 * 60 * 24 * 7)) + 1;
+}
+
+function updateModeLabel(){
+  const label = document.getElementById("modeLabel");
+  if(gameMode === "daily"){
+    label.textContent = `(Day #${getDayNumber()})`;
+  } else if(gameMode === "weekly"){
+    label.textContent = `(Week #${getWeekNumber()})`;
+  } else if(gameMode === "practice"){
+    label.textContent = "(Practice)";
+  }
+}
+
+function getDailyMystery(){
+  const key = getHungarianDateString();
+  let hash = 0;
+  for(let i = 0; i < key.length; i++){
+    hash = key.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % countries.length;
+  return countries[index];
+}
+
+function getWeekDate(){
+  const huDateStr = new Date().toLocaleString("en-US", { timeZone: "Europe/Budapest" });
+  const now = new Date(huDateStr);
+  const day = now.getDay() || 7;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - day + 1);
+  return monday.toDateString();
+}
+
+function getWeeklyMystery(){
+  const huDateStr = new Date().toLocaleString("en-US", { timeZone: "Europe/Budapest" });
+  const now = new Date(huDateStr);
+  const year = now.getFullYear();
+  const start = new Date(year, 0, 1);
+  const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+  const week = Math.floor(days / 7);
+  const seed = year * 100 + week;
+  return countries[seed % countries.length];
+}
+
+document.getElementById("dailyBtn").onclick = () => {
+  startNewGame("daily");
+  bordersVisible = false;
+  updateBorderVisibility();
+  document.getElementById("showBordersBtn").disabled = false;
+  document.getElementById("menuPanel").style.display = "none";
+};
+
+function fullMapReset(){ resetWorldView(); }
+
+function clearAllHighlights(){
+  if(borderOutline){
+    map.removeLayer(borderOutline);
+    borderOutline = null;
+  }
+}
+
+function startNewGame(mode){
+  if(mode === "daily"){ checkDailyStreak(); }
+
+  bordersHintUsed = false;
+  bordersVisible = false;
+  updateBorderVisibility();
+  initialHintUsed = false;
+
+  document.getElementById("showBordersBtn").disabled = false;
+  document.getElementById("showInitialBtn").disabled = false;
+
+  gameMode = mode;
+  gameEnded = false;
+  playerWon = false;
+  attempts = 0;
+  
+  document.getElementById("winText").textContent = "";
+  guessedCountries = [];
+
+  resetMap();
+  clearAllHighlights();
+  fullMapReset(); 
+ 
+  const key = `progress_${mode}`;
+  const saved = localStorage.getItem(key);
+
+  if(saved){
+    const data = JSON.parse(saved);
+    let samePeriod = false;
+
+    if(mode === "daily"){
+      samePeriod = data.date === getHungarianDateString();
+    } else if(mode === "weekly"){
+      samePeriod = data.weekDate === getWeekDate();
+    }
+
+    if(mode !== "practice" && data.gameMode === mode && samePeriod === true){
+      gameMode = mode;
+      if(mode === "weekly"){
+        maxAttempts = 8;
+        document.getElementById("hintButtons").style.display="none";
+      } else {
+        maxAttempts = Infinity;
+        document.getElementById("hintButtons").style.display="flex";
+      }
+      loadProgress();
+      updateModeLabel();
+      return;
+    }
+  }
+
+  guessedCountries = [];
+
+  if(mode === "weekly"){
+    maxAttempts = 8;
+    document.getElementById("hintButtons").style.display = "none";
+  } else {
+    maxAttempts = Infinity;
+    document.getElementById("hintButtons").style.display = "flex";
+  }
+
+  attempts = 0;
+  gameEnded = false;
+  playerWon = false;
+
+  if(mode === "daily"){
+    mystery = getDailyMystery();
+  } else if(mode === "weekly"){
+    mystery = getWeeklyMystery();
+  } else {
+    mystery = countries[Math.floor(Math.random() * countries.length)];
+  }
+
+  if(mode === "weekly"){
+    document.getElementById("remaining").style.display = "block";
+    document.getElementById("remaining").textContent = `Remaining guesses: ${maxAttempts - attempts}`;
+  } else {
+    document.getElementById("remaining").style.display = "none";
+    document.getElementById("remaining").textContent = "";
+  }
+
+  document.getElementById("guessesRow").innerHTML = "";
+  document.getElementById("winText").textContent = "";
+
+  resetMap();
+  updateModeLabel();
+  
+  document.getElementById("countryInput").disabled = false;
+  document.getElementById("countryInput").value = "";
+}
+
+function repaintMapFromGuesses(){
+  if(!guessedCountries) return;
+  guessedCountries.forEach(country => {
+    const distance = shortestPath(country, mystery);
+    geoLayer.eachLayer(layer => {
+      if(layer.feature.properties.name === country){
+        layer.setStyle({ fillColor: getColor(distance), fillOpacity: 0.85 });
+      }
+    });
+  });
+}
+
+function saveProgress() {
+  if (gameMode === "practice") return;
+
+  const progress = {
+    gameMode: gameMode,
+    guessedCountries: guessedCountries,
+    attempts: attempts,
+    gameEnded: gameEnded,
+    playerWon: playerWon,
+    mysteryCountry: mystery,
+    date: getHungarianDateString(),
+    weekDate: getWeekDate()
+  };
+
+  localStorage.setItem(`progress_${gameMode}`, JSON.stringify(progress));
+}
+
+function loadProgress() {
+  resetMap();
+  clearAllHighlights();
+
+  const saved = localStorage.getItem(`progress_${gameMode}`);
+  if (!saved) return false;
+
+  const data = JSON.parse(saved);
+  if (data.gameMode !== gameMode) return false;
+
+  guessedCountries = [...(data.guessedCountries || [])];
+  attempts = data.attempts || 0;
+  gameEnded = data.gameEnded || false;
+  playerWon = data.playerWon || false;
+  mystery = data.mysteryCountry;
+
+  if(gameMode === "weekly"){
+    document.getElementById("remaining").style.display = "block";
+    document.getElementById("remaining").textContent = `Remaining guesses: ${maxAttempts - attempts}`;
+  } else {
+    document.getElementById("remaining").style.display = "none";
+  }
+
+  document.getElementById("guessesRow").innerHTML = "";
+
+  guessedCountries.forEach(country => {
+    const distance = shortestPath(country, mystery);
+    highlightCountry(country, distance);
+    const label = distance === null ? "no connection" : distance;
+    const guessDiv = document.createElement("div");
+    guessDiv.className = "guessItem";
+    guessDiv.style.color = getColor(distance);
+    guessDiv.textContent = `${country.toUpperCase()} (${label})`;
+    document.getElementById("guessesRow").appendChild(guessDiv);
+  });
+
+  setTimeout(() => { repaintMapFromGuesses(); }, 300);
+  return true;
+}
+
+document.getElementById("practiceBtn").onclick = () => {
+  startNewGame("practice");
+  document.getElementById("menuPanel").style.display = "none";
+};
+
+window.onload = () => {
+    checkDailyStreak();
+    setTimeout(() => {
+        startNewGame("daily");
+        resetWorldView();
+    }, 300);
+};
+
+function updateStatsTitle(){
+  const title = document.getElementById("statsTitle");
+  const menuMode = gameMode === "practice" ? "daily" : gameMode;
+  if(menuMode === "weekly"){
+    title.textContent = "Statistics (Weekly Challenge)";
+  } else {
+    title.textContent = "Statistics (Daily Challenge)";
+  }
+}
+
+function createStatsIfMissing(){
+  const key = getStatsKey();
+  if(!key) return;
+  const saved = localStorage.getItem(key);
+  if(saved) return;
+
+  const stats = {
+    gamesPlayed: 0, gamesWon: 0, totalGuesses: 0, currentStreak: 0, longestStreak: 0, lastWonDate: null
+  };
+  localStorage.setItem(key, JSON.stringify(stats));
+}
+
+function updateStatsAfterGame(){
+  createStatsIfMissing();
+  if(gameMode === "practice") return;
+
+  const key = getStatsKey();
+  if(!key) return;
+  const saved = localStorage.getItem(key);
+  if(!saved) return;
+
+  const stats = JSON.parse(saved);
+  stats.gamesPlayed++;
+
+  if(playerWon){
+    stats.gamesWon++;
+    stats.totalGuesses += attempts;
+    stats.currentStreak++;
+    stats.lastWonDate = new Date().toDateString();
+    if(stats.currentStreak > stats.longestStreak){
+      stats.longestStreak = stats.currentStreak;
+    }
+  } else {
+    stats.currentStreak = 0;
+  }
+
+  stats.lastPlayedDate = getHungarianDateString();
+  localStorage.setItem(key, JSON.stringify(stats));
+}
+
+function checkDailyStreak(){
+    const key = "geograph_stats_daily";
+    const stats = JSON.parse(localStorage.getItem(key));
+    if(!stats || !stats.lastWonDate) return;
+
+    const last = new Date(stats.lastWonDate);
+    const today = new Date();
+    last.setHours(0,0,0,0);
+    today.setHours(0,0,0,0);
+
+    const diff = (today - last) / (1000*60*60*24);
+    if(diff > 1){
+        stats.currentStreak = 0;
+        localStorage.setItem(key, JSON.stringify(stats));
+    }
+}
+
+function renderStatsInMenu(){
+  updateStatsTitle();
+  const statsMode = gameMode === "practice" ? "daily" : gameMode;
+  const key = statsMode === "weekly" ? "geograph_stats_weekly" : "geograph_stats_daily";
+
+  const data = JSON.parse(localStorage.getItem(key)) || {
+    gamesPlayed: 0, gamesWon: 0, currentStreak: 0, longestStreak: 0, totalGuesses: 0
+  };
+
+  const winRate = data.gamesPlayed === 0 ? 0 : Math.round((data.gamesWon / data.gamesPlayed) * 100);
+  const average = data.gamesWon === 0 ? 0 : (data.totalGuesses / data.gamesWon).toFixed(2);
+
+  document.getElementById("statGames").textContent = data.gamesPlayed;
+  document.getElementById("statWinRate").textContent = winRate + "%";
+  document.getElementById("statCurrentStreak").textContent = data.currentStreak;
+  document.getElementById("statLongestStreak").textContent = data.longestStreak;
+  document.getElementById("statAverage").textContent = average;
+}
+
+function updateBorderVisibility(){
+    if(!geoLayer) return;
+    geoLayer.eachLayer(layer=>{
+        const props = layer.feature.properties;
+        let name = (props.name || "").toLowerCase();
+
+        if(name==="united states of america") name="united states";
+        if(name==="united republic of tanzania") name="tanzania";
+        if(name==="cote d'ivoire" || name==="côte d'ivoire") name="ivory coast";
+        if(name==="east timor") name="timor-leste";
+        if(name==="timor leste") name="timor-leste";
+        if(name==="republic of serbia") name="serbia";
+        if(name === "czechia") name = "czech republic";
+
+        const guessed = guessedCountries.some(c => normalize(c) === name);
+
+        if(guessed){
+            layer.setStyle({ color:"#000000", weight:1.2, opacity:1 });
+        } else {
+            layer.setStyle({
+                color:bordersVisible ? "#777" : "#d4c38a",
+                weight:bordersVisible ? 0.6 : 0.9,
+                opacity:bordersVisible ? 0.45 : 1
+            });
+        }
+    });
+}
+
+function showPracticeEndPopup(){
+  if(gameMode !== "practice") return;
+  const popup = document.getElementById("practiceEndPopup");
+  const text = document.getElementById("practiceResultText");
+
+  text.textContent = `${mystery.toUpperCase()} was the mystery country!`;
+  popup.style.display = "block";
+
+  document.getElementById("practicePlayAgain").onclick = () => {
+    popup.style.display = "none";
+    startNewGame("practice");
+  };
+
+  document.getElementById("practiceBackMenu").onclick = () => {
+    popup.style.display = "none";
+    openMenu();
+  };
+}
+
+document.getElementById("practicePlayAgain").onclick = () => {
+  document.getElementById("practiceEndPopup").style.display = "none";
+  startNewGame("practice");
+};
+
+document.getElementById("practiceBackMenu").onclick = () => {
+  document.getElementById("practiceEndPopup").style.display = "none";
+  startNewGame("daily");
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    const closePracticePopup = document.getElementById("closePracticePopup");
+    if (closePracticePopup) {
+        closePracticePopup.onclick = () => { document.getElementById("practiceEndPopup").style.display = "none"; };
+    }
+});
+
+window.addEventListener("resize", () => {
+  setTimeout(() => {
+    map.invalidateSize();
+    if(window.innerWidth > 600){ resetWorldView(); }
+  }, 100);
+});
+
+const countryInput = document.getElementById("countryInput");
+countryInput.addEventListener("focus", () => {
+  setTimeout(() => {
+    countryInput.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 300);
+});
+
+document.getElementById("showBordersBtn").onclick = () => {
+    if(bordersVisible) return;
+    bordersHintUsed = true;
+    bordersVisible = true;
+    updateBorderVisibility();
+    document.getElementById("showBordersBtn").disabled = true;
+};
+
+document.getElementById("showInitialBtn").onclick = () => {
+    if(initialHintUsed) return;
+    initialHintUsed = true;
+    document.getElementById("showInitialBtn").disabled = true;
+    document.getElementById("hintText").textContent = "The mystery country starts with: " + mystery.charAt(0).toUpperCase();
+    document.getElementById("hintPopup").style.display = "block";
+};
+
+document.getElementById("closeHint").onclick = () => {
+    document.getElementById("hintPopup").style.display = "none";
+};
+
+// ADSENSE ACCORDION & LEGAL MODAL FUNCTIONS
+function toggleAccordion() {
+  const content = document.getElementById("accordionContent");
+  const arrow = document.getElementById("accordionArrow");
+  if (content.style.display === "block") {
+    content.style.display = "none";
+    arrow.innerText = "▼";
+  } else {
+    content.style.display = "block";
+    arrow.innerText = "▲";
+  }
+}
+
+function openLegalModal(type) {
+  const title = document.getElementById("legalTitle");
+  const body = document.getElementById("legalBody");
+  
+  if (type === 'privacy') {
+    title.innerText = 'Privacy Policy';
+    body.innerHTML = '<p>GeoGraph respects your privacy. Game progress and stats are stored locally on your device. We use Google Analytics and Firebase to gather anonymous daily statistics. Google AdSense uses cookies to serve ads based on your visit to this and other websites.</p>';
+  } else if (type === 'terms') {
+    title.innerText = 'Terms of Service';
+    body.innerHTML = '<p>GeoGraph is provided "as is" for entertainment purposes. Users agree to use the service in compliance with all applicable laws.</p>';
+  } else {
+    title.innerText = 'Cookie Settings';
+    body.innerHTML = '<p>We use essential cookies to maintain game functionality and non-essential cookies for analytics and ad personalization. You may adjust cookie preferences in your browser settings.</p>';
+  }
+  document.getElementById("legalModal").style.display = "block";
+}
+
+document.getElementById("closeLegal").onclick = () => {
+  document.getElementById("legalModal").style.display = "none";
+};
+</script>
+
+</body>
+</html>
